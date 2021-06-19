@@ -3,6 +3,7 @@ package api
 import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/cors"
 	"github.com/johnmaguire/gardenwiki/api/data"
 )
 
@@ -21,8 +22,13 @@ func newDatabase() *database {
 func NewRouter() *chi.Mux {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
+	r.Use(cors.Handler(cors.Options{
+		AllowedOrigins: []string{"http://localhost:8080"},
+		MaxAge:         300, // Maximum value not ignored by any of major browsers
+	}))
 
 	h := Handlers{newDatabase()}
+	r.Get("/page", h.getPage)
 	r.Put("/page", h.putPage)
 
 	return r

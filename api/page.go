@@ -38,6 +38,10 @@ func writeJSON(w http.ResponseWriter, v interface{}) {
 	w.Write(buf)
 }
 
+func (h Handlers) getPage(w http.ResponseWriter, r *http.Request) {
+	writeJSON(w, h.db.Pages)
+}
+
 func (h Handlers) putPage(w http.ResponseWriter, r *http.Request) {
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {

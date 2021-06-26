@@ -11,8 +11,7 @@ type Page struct {
 }
 
 type PageContent struct {
-	Title string
-	Body  string
+	Body string
 
 	UpdatedAt time.Time
 }

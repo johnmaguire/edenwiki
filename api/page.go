@@ -6,12 +6,12 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/go-chi/chi"
 	"github.com/johnmaguire/gardenwiki/api/data"
 )
 
 type putPageRequest struct {
-	Title string `json:"title"`
-	Body  string `json:"body"`
+	Body string `json:"body"`
 }
 
 type errorResponse struct {
@@ -38,11 +38,13 @@ func writeJSON(w http.ResponseWriter, v interface{}) {
 	w.Write(buf)
 }
 
-func (h Handlers) getPage(w http.ResponseWriter, r *http.Request) {
+func (h Handlers) listPages(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, h.db.Pages)
 }
 
 func (h Handlers) putPage(w http.ResponseWriter, r *http.Request) {
+	pageName := chi.URLParam(r, "pageName")
+
 	body, err := ioutil.ReadAll(r.Body)
 	if err != nil {
 		panic(err)
@@ -54,18 +56,13 @@ func (h Handlers) putPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if d.Title == "" {
-		writeError(w, "no title provided")
-		return
-	}
-
 	if d.Body == "" {
 		writeError(w, "no body provided")
 		return
 	}
 
 	// fetch or create page
-	p, ok := h.db.Pages[d.Title]
+	p, ok := h.db.Pages[pageName]
 	if !ok {
 		p = data.Page{
 			CreatedAt: time.Now(),
@@ -75,11 +72,10 @@ func (h Handlers) putPage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// set new page content
-	p.Title = d.Title
 	p.Body = d.Body
 	p.UpdatedAt = time.Now()
 
-	h.db.Pages[d.Title] = p
+	h.db.Pages[pageName] = p
 
 	writeJSON(w, p)
 }

@@ -23,6 +23,7 @@ func NewRouter() *chi.Mux {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 	r.Use(cors.Handler(cors.Options{
+		AllowedMethods: []string{"GET", "POST", "PUT"},
 		AllowedOrigins: []string{"http://localhost:8080"},
 		MaxAge:         300, // Maximum value not ignored by any of major browsers
 	}))

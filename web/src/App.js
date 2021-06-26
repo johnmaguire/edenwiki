@@ -1,5 +1,6 @@
 import Home from './pages/Home';
 import Page from './pages/Page';
+import NewPage from './pages/NewPage';
 import {
   BrowserRouter as Router,
   Switch,
@@ -19,6 +20,9 @@ function App(props) {
           </Route>
           <Route path="/page/:pageName">
             <Page />
+          </Route>
+          <Route path="/new">
+            <NewPage />
           </Route>
         </Switch>
       </div>

@@ -20,7 +20,7 @@ export default function Page(props) {
           setError(error);
         }
       )
-  }, []);
+  }, [pageName]);
 
   let content = null;
   if (!isLoaded) {
@@ -32,9 +32,9 @@ export default function Page(props) {
   }
 
   return (
-    <div>
+    <>
       <h2>{pageName}</h2>
       <p>{content}</p>
-    </div>
+    </>
   )
 }

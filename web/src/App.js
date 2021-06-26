@@ -8,7 +8,7 @@ import {
   Link,
 } from 'react-router-dom';
 
-function App(props) {
+function App() {
   return (
     <Router>
       <div className="App">

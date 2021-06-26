@@ -2,16 +2,15 @@ import { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
-export default function NewPageForm(props) {
+export default function NewPageForm() {
   const [pageName, setPageName] = useState("");
   const [submitError, setSubmitError] = useState("");
   const { register, handleSubmit, formState: { errors } } = useForm();
 
   const onSubmit = (data) => {
     fetch("http://localhost:3000/page/" + data.title, {method: "PUT", body: JSON.stringify({Body: data.body})})
-      .then(res => res.json())
       .then(
-        (result) => {
+        () => {
           setPageName(data.title);
         },
         (error) => {

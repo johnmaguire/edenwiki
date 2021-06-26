@@ -42,6 +42,18 @@ func (h Handlers) listPages(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, h.db.Pages)
 }
 
+func (h Handlers) getPage(w http.ResponseWriter, r *http.Request) {
+	pageName := chi.URLParam(r, "pageName")
+
+	page, ok := h.db.Pages[pageName]
+	if !ok {
+		http.NotFound(w, r)
+		return
+	}
+
+	writeJSON(w, page)
+}
+
 func (h Handlers) putPage(w http.ResponseWriter, r *http.Request) {
 	pageName := chi.URLParam(r, "pageName")
 

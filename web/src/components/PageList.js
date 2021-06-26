@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 function PageList() {
   const [error, setError] = useState(null);
@@ -11,7 +12,6 @@ function PageList() {
       .then(
         (result) => {
           setIsLoaded(true);
-          console.log(result);
           setPages(result);
         },
         (error) => {
@@ -34,7 +34,7 @@ function PageList() {
       <ul>
         {Object.keys(pages).map((page, i) => (
           <li>
-            <a href="#" key={page}>{page}</a>
+            <Link to={"/page/"+page} key={page}>{page}</Link>
           </li>
         ))}
       </ul>

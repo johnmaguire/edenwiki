@@ -30,6 +30,7 @@ func NewRouter() *chi.Mux {
 	h := Handlers{newDatabase()}
 	r.Get("/page", h.listPages)
 	r.Put("/page/{pageName}", h.putPage)
+	r.Get("/page/{pageName}", h.getPage)
 
 	return r
 }

@@ -8,6 +8,7 @@ import {
 import Home from './pages/Home';
 import Page from './pages/Page';
 import NewPage from './pages/NewPage';
+import BottomNav from './components/BottomNav';
 
 import './styles/global';
 
@@ -24,10 +25,12 @@ function App() {
           <Route path="/page/:pageName">
             <Page />
           </Route>
-          <Route path="/new">
+          <Route exact path="/new">
             <NewPage />
           </Route>
         </Switch>
+
+        <BottomNav />
       </div>
     </Router>
   );

@@ -10,8 +10,6 @@ export default function Page() {
       <Clock />
 
       <PageList />
-
-      <p><Link to="/new">Create a new page</Link></p>
     </>
   )
 }

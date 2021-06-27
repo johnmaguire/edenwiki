@@ -4,9 +4,9 @@ import { Link } from 'react-router-dom';
 import ErrorMessage from '../components/ErrorMessage';
 
 function PageList() {
-  const [isErrored, setIsErrored] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [pages, setPages] = useState([]);
+  const [isErrored, setIsErrored] = useState<boolean>(false);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
+  const [pages, setPages] = useState<{Body: string}[]>([]);
 
   useEffect(() => {
     fetch("http://localhost:3000/page")
@@ -35,7 +35,7 @@ function PageList() {
 
     return (
       <ul>
-        {Object.keys(pages).map((page, i) => (
+        {Object.keys(pages).map((page) => (
           <li>
             <Link to={"/page/"+page} key={page}>{page}</Link>
           </li>

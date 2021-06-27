@@ -5,8 +5,8 @@ import ReactMarkdown from 'react-markdown';
 import ErrorMessage from '../components/ErrorMessage';
 
 export default function Page() {
-  const [isErrored, setIsErrored] = useState(false);
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [isErrored, setIsErrored] = useState<boolean>(false);
+  const [isLoaded, setIsLoaded] = useState<boolean>(false);
   const [page, setPage] = useState<{Body: string}>({Body: ""});
   const { pageName } = useParams<{pageName: string}>();
 

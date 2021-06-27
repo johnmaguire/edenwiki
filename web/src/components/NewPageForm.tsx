@@ -6,11 +6,11 @@ import ErrorMessage from '../components/ErrorMessage';
 import styles from './NewPageForm.module.css';
 
 export default function NewPageForm() {
-  const [pageName, setPageName] = useState("");
-  const [isErrored, setIsErrored] = useState(false);
+  const [pageName, setPageName] = useState<string>("");
+  const [isErrored, setIsErrored] = useState<boolean>(false);
   const { register, handleSubmit, formState: { errors } } = useForm();
 
-  const onSubmit = (data) => {
+  const onSubmit = (data: {title: string, body: string}) => {
     fetch("http://localhost:3000/page/" + data.title, {method: "PUT", body: JSON.stringify({Body: data.body})})
       .then(
         () => {

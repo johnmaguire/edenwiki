@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import ErrorMessage from '../components/ErrorMessage';
+
 function PageList() {
-  const [error, setError] = useState(null);
+  const [isErrored, setIsErrored] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
   const [pages, setPages] = useState([]);
 
@@ -15,19 +17,20 @@ function PageList() {
           setPages(result);
         },
         (error) => {
+          console.error(error);
           setIsLoaded(true);
-          setError(error);
+          setIsErrored(true);
         }
       )
   }, []);
 
   if (!isLoaded) {
     return <p>Loading pages...</p>
-  } else if(error !== null) {
-    return <p>Error: {error.message}</p>
+  } else if(isErrored) {
+    return <ErrorMessage>Unable to fetch available pages.</ErrorMessage>
   } else {
     if (Object.keys(pages).length === 0) {
-      return <p>No pages exist yet. Create one?</p>
+      return <p>No pages exist yet. <Link to={"/new"}>Create one?</Link></p>
     }
 
     return (

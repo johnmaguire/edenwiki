@@ -2,9 +2,12 @@ import { useState } from 'react';
 import { Redirect } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 
+import ErrorMessage from '../components/ErrorMessage';
+import styles from './NewPageForm.module.css';
+
 export default function NewPageForm() {
   const [pageName, setPageName] = useState("");
-  const [submitError, setSubmitError] = useState("");
+  const [isErrored, setIsErrored] = useState(false);
   const { register, handleSubmit, formState: { errors } } = useForm();
 
   const onSubmit = (data) => {
@@ -14,22 +17,23 @@ export default function NewPageForm() {
           setPageName(data.title);
         },
         (error) => {
-          setSubmitError(error.message);
+          console.error(error);
+          setIsErrored(true);
         },
       )
   }
 
   return pageName ? <Redirect to={"/page/"+pageName} /> : (
     <>
-      {submitError && <p>Error: {submitError}</p>}
+      {isErrored && <ErrorMessage>Failed to create the page.</ErrorMessage>}
       <form onSubmit={handleSubmit(onSubmit)}>
         <p>
-          <label>Title: <input {...register("title", { required: true })} /></label>
-          {errors.title && <span>A title is required.</span>}
+          <label>Title: <input className={styles.title} {...register("title", { required: true })} /></label>
+          {errors.title && <ErrorMessage>A title is required.</ErrorMessage>}
         </p>
         <div>
-          <textarea {...register("body", { required: true })}></textarea>
-          {errors.body && <span>A title is required.</span>}
+          <textarea className={styles.body} {...register("body", { required: true })}></textarea>
+          {errors.body && <ErrorMessage>A body is required.</ErrorMessage>}
         </div>
         <input type="submit" name="submit" value="Create" />
       </form>

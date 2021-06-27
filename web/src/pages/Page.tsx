@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
+import ErrorMessage from '../components/ErrorMessage';
+
 export default function Page() {
-  const [error, setError] = useState(null);
+  const [isErrored, setIsErrored] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [page, setPage] = useState({});
-  const { pageName } = useParams();
+  const [page, setPage] = useState<{Body?: string}>({});
+  const { pageName } = useParams<{pageName: string}>();
 
   useEffect(() => {
     fetch("http://localhost:3000/page/"+pageName)
@@ -16,25 +18,27 @@ export default function Page() {
           setPage(result);
         },
         (error) => {
+          console.error(error);
           setIsLoaded(true);
-          setError(error);
+          setIsErrored(true);
         }
       )
   }, [pageName]);
 
-  let content = null;
+  let children: JSX.Element = <></>;
   if (!isLoaded) {
-    content = <p>Loading page...</p>;
-  } else if(error !== null) {
-    content = <p>Error: {error.message}</p>;
+    children = <p>Loading page...</p>;
+  } else if(isErrored) {
+    children = <ErrorMessage>Unable to load the page.</ErrorMessage>;
   } else {
-    content = <p>{page.Body}</p>
+    children = <p>{page.Body}</p>
   }
 
   return (
     <>
       <h2>{pageName}</h2>
-      <p>{content}</p>
+
+      {children}
     </>
   )
 }

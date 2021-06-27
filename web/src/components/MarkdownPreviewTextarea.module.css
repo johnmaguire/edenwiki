@@ -9,6 +9,7 @@
     height: 500px;
     font-size: 1.25rem;
     line-height: 2rem;
+    resize: vertical;
 }
 
 .textarea_wrapper {

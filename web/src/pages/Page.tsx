@@ -1,12 +1,13 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
+import ReactMarkdown from 'react-markdown';
 
 import ErrorMessage from '../components/ErrorMessage';
 
 export default function Page() {
   const [isErrored, setIsErrored] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
-  const [page, setPage] = useState<{Body?: string}>({});
+  const [page, setPage] = useState<{Body: string}>({Body: ""});
   const { pageName } = useParams<{pageName: string}>();
 
   useEffect(() => {
@@ -31,7 +32,7 @@ export default function Page() {
   } else if(isErrored) {
     children = <ErrorMessage>Unable to load the page.</ErrorMessage>;
   } else {
-    children = <p>{page.Body}</p>
+    children = <ReactMarkdown>{page.Body}</ReactMarkdown>
   }
 
   return (

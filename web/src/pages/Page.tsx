@@ -26,20 +26,16 @@ export default function Page() {
       )
   }, [pageName]);
 
-  let children: JSX.Element = <></>;
-  if (!isLoaded) {
-    children = <p>Loading page...</p>;
-  } else if(isErrored) {
-    children = <ErrorMessage>Unable to load the page.</ErrorMessage>;
-  } else {
-    children = <ReactMarkdown>{page.Body}</ReactMarkdown>
-  }
-
   return (
     <>
       <h2>{pageName}</h2>
 
-      {children}
+      {isLoaded ? (
+        isErrored ? <ErrorMessage>Unable to load the page.</ErrorMessage> :
+          <ReactMarkdown>{page.Body}</ReactMarkdown>
+       ) : (
+        <p>Loading page...</p>
+      )}
     </>
   )
 }

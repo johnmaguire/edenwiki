@@ -16,7 +16,7 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <h1><Link to="/">GardenWiki</Link></h1>
+        <h1><Link to="/">EdenWiki</Link></h1>
 
         <Switch>
           <Route exact path="/">

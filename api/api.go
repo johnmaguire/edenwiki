@@ -4,7 +4,7 @@ import (
 	"github.com/go-chi/chi"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
-	"github.com/johnmaguire/gardenwiki/api/data"
+	"github.com/johnmaguire/edenwiki/api/data"
 )
 
 type Handlers struct {

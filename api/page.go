@@ -7,7 +7,7 @@ import (
 	"time"
 
 	"github.com/go-chi/chi"
-	"github.com/johnmaguire/gardenwiki/api/data"
+	"github.com/johnmaguire/edenwiki/api/data"
 )
 
 type putPageRequest struct {

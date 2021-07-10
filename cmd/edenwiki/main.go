@@ -3,7 +3,7 @@ package main
 import (
 	"net/http"
 
-	"github.com/johnmaguire/gardenwiki/api"
+	"github.com/johnmaguire/edenwiki/api"
 	"github.com/sirupsen/logrus"
 )
 

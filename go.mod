@@ -1,4 +1,4 @@
-module github.com/johnmaguire/gardenwiki
+module github.com/johnmaguire/edenwiki
 
 go 1.16
 

@@ -1,19 +1,11 @@
 package data
 
-import "time"
-
+// Page is used to return a page response from the API.
 type Page struct {
-	PageContent
-
-	CreatedAt time.Time
-
-	History PageHistory
-}
-
-type PageContent struct {
 	Body string
-
-	UpdatedAt time.Time
 }
 
-type PageHistory []PageContent
+// PageList is used to return a list of pages names from the API.
+type PageList struct {
+	Pages []string
+}

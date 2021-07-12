@@ -2,13 +2,16 @@ package api
 
 import (
 	"encoding/json"
+	"errors"
 	"io/ioutil"
 	"net/http"
-	"time"
 
 	"github.com/go-chi/chi"
 	"github.com/johnmaguire/edenwiki/api/data"
+	"github.com/johnmaguire/edenwiki/git"
 )
+
+type m map[string]interface{}
 
 type putPageRequest struct {
 	Body string `json:"body"`
@@ -38,23 +41,32 @@ func writeJSON(w http.ResponseWriter, v interface{}) {
 	w.Write(buf)
 }
 
-func (h Handlers) listPages(w http.ResponseWriter, r *http.Request) {
-	writeJSON(w, h.db.Pages)
-}
-
-func (h Handlers) getPage(w http.ResponseWriter, r *http.Request) {
-	pageName := chi.URLParam(r, "pageName")
-
-	page, ok := h.db.Pages[pageName]
-	if !ok {
-		http.NotFound(w, r)
+func (h handlers) listPages(w http.ResponseWriter, r *http.Request) {
+	pages, err := h.wiki.ListPages()
+	if err != nil {
+		writeError(w, "failed to list pages")
 		return
 	}
 
-	writeJSON(w, page)
+	writeJSON(w, data.PageList{Pages: pages})
 }
 
-func (h Handlers) putPage(w http.ResponseWriter, r *http.Request) {
+func (h handlers) getPage(w http.ResponseWriter, r *http.Request) {
+	pageName := chi.URLParam(r, "pageName")
+
+	body, err := h.wiki.GetPage(pageName)
+	switch {
+	case errors.Is(err, git.ErrPageNotExists):
+		http.NotFound(w, r)
+		return
+	case err != nil:
+		panic(err)
+	}
+
+	writeJSON(w, data.Page{Body: string(body)})
+}
+
+func (h handlers) putPage(w http.ResponseWriter, r *http.Request) {
 	pageName := chi.URLParam(r, "pageName")
 
 	body, err := ioutil.ReadAll(r.Body)
@@ -73,21 +85,7 @@ func (h Handlers) putPage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// fetch or create page
-	p, ok := h.db.Pages[pageName]
-	if !ok {
-		p = data.Page{
-			CreatedAt: time.Now(),
-		}
-	} else {
-		p.History = append(p.History, p.PageContent)
-	}
+	h.wiki.SetPage(pageName, []byte(d.Body))
 
-	// set new page content
-	p.Body = d.Body
-	p.UpdatedAt = time.Now()
-
-	h.db.Pages[pageName] = p
-
-	writeJSON(w, p)
+	writeJSON(w, data.Page{Body: d.Body})
 }

@@ -1,9 +1,13 @@
 package git
 
 import (
+	"errors"
 	"fmt"
+	"io/fs"
 	"io/ioutil"
 	"os"
+	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/go-git/go-billy/v5"
@@ -21,13 +25,19 @@ const (
 This is your home page. Feel free to edit it however you please.`
 )
 
+// ErrPageNotExists is returned when a page does not exist.
+var ErrPageNotExists = errors.New("page does not exist")
+
+// Wiki encapsulates a Git-backed wiki.
 type Wiki struct {
-	fs billy.Filesystem
-	r  *git.Repository
+	path string
+	fs   billy.Filesystem
+	r    *git.Repository
 }
 
+// CreateWiki creates a new wiki on-disk at the specified path and returns a new Wiki object for it.
 func CreateWiki(path string) (*Wiki, error) {
-	w := Wiki{}
+	w := Wiki{path: path}
 
 	// Create repository directory
 	err := os.MkdirAll(path+"/.git", 0755)
@@ -80,6 +90,7 @@ func CreateWiki(path string) (*Wiki, error) {
 	return &w, nil
 }
 
+// SetPage creates or updates a page with the given content, and commits the change.
 func (w *Wiki) SetPage(name string, contents []byte) error {
 	fileName := name + ".md"
 
@@ -126,12 +137,15 @@ func (w *Wiki) SetPage(name string, contents []byte) error {
 	return nil
 }
 
+// GetPage looks up a page in the Git repository and returns its contents.
 func (w *Wiki) GetPage(name string) ([]byte, error) {
 	fileName := name + ".md"
 
 	f, err := w.fs.Open(fileName)
-	if err != nil {
-		// FIXME return specific error for page not exists?
+	switch {
+	case os.IsNotExist(err):
+		return nil, ErrPageNotExists
+	case err != nil:
 		return nil, err
 	}
 
@@ -141,4 +155,20 @@ func (w *Wiki) GetPage(name string) ([]byte, error) {
 	}
 
 	return buf, nil
+}
+
+func (w *Wiki) ListPages() ([]string, error) {
+	var pageNames []string
+
+	err := filepath.WalkDir(w.path, func(path string, d fs.DirEntry, err error) error {
+		if strings.HasSuffix(path, ".md") {
+			pageNames = append(pageNames, path[len(w.path)-1:len(path)-3])
+		}
+		return nil
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return pageNames, nil
 }

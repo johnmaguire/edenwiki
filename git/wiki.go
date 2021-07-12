@@ -22,7 +22,9 @@ const (
 	homePageName           = "Home"
 	homePageInitialContent = `# Welcome to EdenWiki!
 
-This is your home page. Feel free to edit it however you please.`
+This is your home page. Feel free to edit it however you please.
+
+You can see all the [current pages here](/page/).`
 )
 
 // ErrPageNotExists is returned when a page does not exist.

@@ -1,11 +1,12 @@
 import {
   BrowserRouter as Router,
   Switch,
+  Redirect,
   Route,
   Link,
 } from 'react-router-dom';
 
-import Home from './pages/Home';
+import PageList from './pages/PageList';
 import Page from './pages/Page';
 import NewPage from './pages/NewPage';
 import BottomNav from './components/BottomNav';
@@ -20,7 +21,10 @@ function App() {
 
         <Switch>
           <Route exact path="/">
-            <Home />
+            <Redirect to="/page/Home" />
+          </Route>
+          <Route exact path="/page">
+            <PageList />
           </Route>
           <Route path="/page/:pageName">
             <Page />

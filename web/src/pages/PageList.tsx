@@ -34,13 +34,16 @@ function PageList() {
     }
 
     return (
-      <ul>
-        {pages.map((page) => (
-          <li>
-            <Link to={"/page/"+page} key={page}>{page}</Link>
-          </li>
-        ))}
-      </ul>
+      <>
+        <h2>Pages</h2>
+        <ul>
+          {pages.map((page) => (
+            <li>
+              <Link to={"/page/"+page} key={page}>{page}</Link>
+            </li>
+          ))}
+        </ul>
+      </>
     );
   }
 }

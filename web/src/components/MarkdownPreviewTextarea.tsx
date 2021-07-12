@@ -1,7 +1,9 @@
 import React from 'react';
+import { Control, useFormContext, useWatch } from 'react-hook-form';
 import ReactMarkdown from 'react-markdown';
 import gfm from 'remark-gfm';
-import { Control, useFormContext, useWatch } from 'react-hook-form';
+// @ts-ignore
+import wikiLink from 'remark-wiki-link';
 
 import ErrorMessage from '../components/ErrorMessage';
 import styles from './MarkdownPreviewTextarea.module.css';
@@ -17,7 +19,15 @@ function PreviewRenderer({ inputName, control }: {inputName: string, control: Co
     name: inputName,
     defaultValue: "",
   });
-  return <ReactMarkdown className={styles.preview_pane} remarkPlugins={[[gfm]]}>{text}</ReactMarkdown>;
+  return (
+    <ReactMarkdown className={styles.preview_pane} remarkPlugins={
+      [[gfm],
+       [wikiLink, {
+         aliasDivider: '|',
+         pageResolver: (name: string) => [name],
+         hrefTemplate: (permalink: string) => `/page/${permalink}`,
+       }]]}>{text}</ReactMarkdown>
+  );
 }
 
 export default function MarkdownPreviewTextarea(props: Props) {

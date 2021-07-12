@@ -2,8 +2,11 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
 import gfm from 'remark-gfm';
+// @ts-ignore
+import wikiLink from 'remark-wiki-link';
 
 import ErrorMessage from '../components/ErrorMessage';
+
 
 export default function Page() {
   const [isErrored, setIsErrored] = useState<boolean>(false);
@@ -33,7 +36,13 @@ export default function Page() {
 
       {isLoaded ? (
         isErrored ? <ErrorMessage>Unable to load the page.</ErrorMessage> :
-          <ReactMarkdown remarkPlugins={[[gfm]]}>{page.Body}</ReactMarkdown>
+          <ReactMarkdown remarkPlugins={
+            [[gfm],
+             [wikiLink, {
+               aliasDivider: '|',
+               pageResolver: (name: string) => [name],
+               hrefTemplate: (permalink: string) => `/page/${permalink}`,
+             }]]}>{page.Body}</ReactMarkdown>
        ) : (
         <p>Loading page...</p>
       )}

@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
+import gfm from 'remark-gfm';
 import { Control, useFormContext, useWatch } from 'react-hook-form';
 
 import ErrorMessage from '../components/ErrorMessage';
@@ -16,7 +17,7 @@ function PreviewRenderer({ inputName, control }: {inputName: string, control: Co
     name: inputName,
     defaultValue: "",
   });
-  return <ReactMarkdown className={styles.preview_pane}>{text}</ReactMarkdown>;
+  return <ReactMarkdown className={styles.preview_pane} remarkPlugins={[[gfm]]}>{text}</ReactMarkdown>;
 }
 
 export default function MarkdownPreviewTextarea(props: Props) {

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
+import gfm from 'remark-gfm';
 
 import ErrorMessage from '../components/ErrorMessage';
 
@@ -32,7 +33,7 @@ export default function Page() {
 
       {isLoaded ? (
         isErrored ? <ErrorMessage>Unable to load the page.</ErrorMessage> :
-          <ReactMarkdown>{page.Body}</ReactMarkdown>
+          <ReactMarkdown remarkPlugins={[[gfm]]}>{page.Body}</ReactMarkdown>
        ) : (
         <p>Loading page...</p>
       )}

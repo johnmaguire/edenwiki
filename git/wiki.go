@@ -37,55 +37,49 @@ type Wiki struct {
 	r    *git.Repository
 }
 
-// CreateWiki creates a new wiki on-disk at the specified path and returns a new Wiki object for it.
+// CreateWiki creates a new wiki on-disk at the specified path if one does not
+// already exists and returns a new Wiki object for it.
 func CreateWiki(path string) (*Wiki, error) {
 	w := Wiki{path: path}
 
-	// Create repository directory
+	// Create repository & git directories
 	err := os.MkdirAll(path+"/.git", 0755)
-	if err != nil {
+	switch {
+	case errors.Is(err, fs.ErrExist):
+		// already exists, do nothing
+	case err != nil:
 		return nil, err
 	}
 
+	// Initialize or open Git repository to return with Wiki
 	gitfs := osfs.New(path + "/.git")
 	s := filesystem.NewStorage(gitfs, cache.NewObjectLRUDefault())
 
 	w.fs = osfs.New(path)
-	w.r, err = git.Init(s, w.fs)
-	if err != nil {
+	w.r, err = git.Init(s, w.fs) // Init if it doesn't exist
+
+	switch {
+	case errors.Is(err, git.ErrRepositoryAlreadyExists):
+		// Open the repository if it does exists
+		w.r, err = git.Open(s, w.fs)
+		if err != nil {
+			return nil, err
+		}
+	case err != nil:
 		return nil, err
 	}
 
+	// Create the home page if it doesn't yet exist
 	homeFileName := homePageName + ".md"
-	f, err := w.fs.Create(homeFileName)
-	if err != nil {
-		return nil, err
-	}
-
-	_, err = f.Write([]byte(homePageInitialContent))
-	if err != nil {
-		return nil, err
-	}
-
-	wt, err := w.r.Worktree()
-	if err != nil {
-		return nil, err
-	}
-
-	_, err = wt.Add(homeFileName)
-	if err != nil {
-		return nil, err
-	}
-
-	author := object.Signature{
-		Name: "EdenWiki",
-	}
-	_, err = wt.Commit("Initial commit", &git.CommitOptions{
-		All:       true,
-		Author:    &author,
-		Committer: &author,
-	})
-	if err != nil {
+	_, err = w.fs.Stat(homeFileName)
+	switch {
+	case errors.Is(err, fs.ErrNotExist):
+		// Create the home page
+		err := w.SetPage(homePageName, []byte(homePageInitialContent))
+		if err != nil {
+			return nil, err
+		}
+	case err != nil:
 		return nil, err
 	}
 

@@ -2,7 +2,6 @@ package main
 
 import (
 	"net/http"
-	"os"
 
 	"github.com/johnmaguire/edenwiki/api"
 	"github.com/johnmaguire/edenwiki/git"
@@ -14,12 +13,10 @@ var log = logrus.New()
 const wikiPath = "./wiki"
 
 func main() {
-	err := os.RemoveAll(wikiPath)
-	if err != nil {
-		log.WithError(err).Fatal("Failed to remove old wiki repository")
-	}
-
 	wiki, err := git.CreateWiki(wikiPath)
+	if err != nil {
+		log.WithError(err).Fatal("Failed to create the wiki")
+	}
 	r := api.NewRouter(wiki)
 
 	ch := make(chan bool, 1)

@@ -1,5 +1,7 @@
 # edenwiki
 
+![Demo Screenshot](../assets/screenshot.png)
+
 A Git-backed Markdown wiki.
 
 ## Running
